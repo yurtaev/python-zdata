@@ -20,9 +20,23 @@ class zdata():
         }
         self.URL_TICKET = "https://accounts.zoho.com/login?servicename=%s&FROM_AGENT=true&LOGIN_ID=%s&PASSWORD=%s"
 
-    def get_ticket (self, servicename):
+    def __check_servicename(self, servicename):
         if not servicename in ["ZohoWriter", "ZohoSheet", "ZohoShow"]:
-            raise Exception('not servicename in ["ZohoWriter", "ZohoSheet", "ZohoShow"]')
+            msg = '%s is not servicename ["ZohoWriter", "ZohoSheet", "ZohoShow"]' % servicename
+            raise Exception(msg)
+
+    def __check_format(self, format):
+        if not format in ["xml", "json"]:
+            msg = '%s not format ["xml", "json"]' % format
+            raise Exception(msg)
+
+    def __check_access(self, access):
+        if not access in ["private", "public"]:
+            msg = '%s is not access ["private", "public"]' % access
+            raise Exception(msg)
+
+    def get_ticket (self, servicename):
+        self.__check_servicename(servicename)
 
         if self.ticket[servicename]:
             return self.ticket[servicename]
@@ -42,10 +56,8 @@ class zdata():
         return self.ticket[servicename]
 
     def get_list(self, servicename, format="json", dict=False):
-        if not servicename in ["ZohoWriter", "ZohoSheet", "ZohoShow"]:
-            raise Exception('not servicename in ["ZohoWriter", "ZohoSheet", "ZohoShow"]')
-        if not format in ["xml", "json"]:
-            raise Exception('not format in ["xml", "json"]')
+        self.__check_servicename(servicename)
+        self.__check_format(format)
 
         args = (format, self.api_key, self.get_ticket(servicename))
         url = None
@@ -69,12 +81,9 @@ class zdata():
             return data
 
     def get_content(self, access, servicename, id, format="json", dict=False):
-        if not servicename in ["ZohoWriter", "ZohoSheet", "ZohoShow"]:
-            raise Exception('not servicename in ["ZohoWriter", "ZohoSheet", "ZohoShow"]')
-        if not format in ["xml", "json"]:
-            raise Exception('not format in ["xml", "json"]')
-        if not access in ["private", "public"]:
-            raise Exception('not public in ["private", "public"]')
+        self.__check_servicename(servicename)
+        self.__check_format(format)
+        self.__check_access(access)
 
         args = (access, format, id, self.api_key, self.get_ticket(servicename))
         url = None
