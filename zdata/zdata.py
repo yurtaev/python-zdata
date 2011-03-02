@@ -39,9 +39,10 @@ class zdata():
                 if not format in ["ppt", "pps", "odp", "pdf"]:
                     msg = '%s not format %s ["ppt", "pps", "odp", "pdf"]' % (format, servicename)
                     raise Exception(msg)
-        if not format in ["xml", "json"]:
-            msg = '%s not format ["xml", "json"]' % format
-            raise Exception(msg)
+        else:
+            if not format in ["xml", "json"]:
+                msg = '%s not format ["xml", "json"]' % format
+                raise Exception(msg)
 
     def __check_access(self, access):
         if not access in ["private", "public"]:
@@ -118,3 +119,20 @@ class zdata():
                 return data
         elif format in "xml":
             return data
+
+    def get_url_download(self, access, servicename, format, id):
+        self.__check_access(access)
+        self.__check_servicename(servicename)
+        self.__check_format(format, servicename=servicename)
+
+        args = (access, format, id, self.api_key, self.get_ticket(servicename))
+        url = None
+
+        if servicename in "ZohoWriter":
+            url = "https://export.writer.zoho.com/api/%s/%s/download/%s?apikey=%s&ticket=%s" % args
+        elif servicename in "ZohoSheet":
+            url = "https://sheet.zoho.com/api/%s/%s/download/%s?apikey=%s&ticket=%s" % args
+        elif servicename in "ZohoShow":
+            url = "https://show.zoho.com/api/%s/%s/download/%s?apikey=%s&ticket=%s" % args
+
+        return url
