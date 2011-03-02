@@ -25,7 +25,20 @@ class zdata():
             msg = '%s is not servicename ["ZohoWriter", "ZohoSheet", "ZohoShow"]' % servicename
             raise Exception(msg)
 
-    def __check_format(self, format):
+    def __check_format(self, format, servicename=None):
+        if servicename:
+            if servicename in "ZohoWriter":
+                if not format in ["doc", "docx", "pdf", "html", "sxw", "odt", "rtf"]:
+                    msg = '%s not format %s ["doc", "docx", "pdf", "html", "sxw", "odt", "rtf"]' % (format, servicename)
+                    raise Exception(msg)
+            elif servicename in "ZohoSheet":
+                if not format in ["xls", "xlsx", "ods", "sxc", "pdf", "html", "csv", "tsv"]:
+                    msg = '%s not format %s ["xls", "xlsx", "ods", "sxc", "pdf", "html", "csv", "tsv"]' % (format, servicename)
+                    raise Exception(msg)
+            elif servicename in "ZohoShow":
+                if not format in ["ppt", "pps", "odp", "pdf"]:
+                    msg = '%s not format %s ["ppt", "pps", "odp", "pdf"]' % (format, servicename)
+                    raise Exception(msg)
         if not format in ["xml", "json"]:
             msg = '%s not format ["xml", "json"]' % format
             raise Exception(msg)
