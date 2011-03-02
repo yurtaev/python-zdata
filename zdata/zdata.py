@@ -67,3 +67,32 @@ class zdata():
                 return data
         elif format in "xml":
             return data
+
+    def get_content(self, access, servicename, id, format="json", dict=False):
+        if not servicename in ["ZohoWriter", "ZohoSheet", "ZohoShow"]:
+            raise Exception('not servicename in ["ZohoWriter", "ZohoSheet", "ZohoShow"]')
+        if not format in ["xml", "json"]:
+            raise Exception('not format in ["xml", "json"]')
+        if not access in ["private", "public"]:
+            raise Exception('not public in ["private", "public"]')
+
+        args = (access, format, id, self.api_key, self.get_ticket(servicename))
+        url = None
+
+        if servicename in "ZohoWriter":
+            url = "https://export.writer.zoho.com/api/%s/%s/content/%s?apikey=%s&ticket=%s" % args
+        elif servicename in "ZohoSheet":
+            url = "https://sheet.zoho.com/api/%s/%s/content/%s?apikey=%s&ticket=%s" % args
+        elif servicename in "ZohoShow":
+            url = "https://show.zoho.com/api/%s/%s/content/%s?apikey=%s&ticket=%s" % args
+
+        data = urllib.urlopen(url)
+        data = data.read()
+
+        if format in "json":
+            if dict:
+                return json.loads(data)
+            else:
+                return data
+        elif format in "xml":
+            return data
