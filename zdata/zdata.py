@@ -18,35 +18,33 @@ class zdata():
             "ZohoSheet": None,
             "ZohoShow": None
         }
+        self.formats = {
+            "ZohoWriter": ["doc", "docx", "pdf", "html", "sxw", "odt", "rtf"],
+            "ZohoSheet": ["xls", "xlsx", "ods", "sxc", "pdf", "html", "csv", "tsv"],
+            "ZohoShow": ["ppt", "pps", "odp", "pdf"],
+            "get": ["xml", "json"],
+            "access": ["private", "public"]
+        }
         self.URL_TICKET = "https://accounts.zoho.com/login?servicename=%s&FROM_AGENT=true&LOGIN_ID=%s&PASSWORD=%s"
 
     def __check_servicename(self, servicename):
         if not servicename in ["ZohoWriter", "ZohoSheet", "ZohoShow"]:
-            msg = '%s is not servicename ["ZohoWriter", "ZohoSheet", "ZohoShow"]' % servicename
+            msg = '%s is not servicename ["ZohoWriter", "ZohoSheet",     "ZohoShow"]' % servicename
             raise Exception(msg)
 
     def __check_format(self, format, servicename=None):
         if servicename:
-            if servicename in "ZohoWriter":
-                if not format in ["doc", "docx", "pdf", "html", "sxw", "odt", "rtf"]:
-                    msg = '%s not format %s ["doc", "docx", "pdf", "html", "sxw", "odt", "rtf"]' % (format, servicename)
-                    raise Exception(msg)
-            elif servicename in "ZohoSheet":
-                if not format in ["xls", "xlsx", "ods", "sxc", "pdf", "html", "csv", "tsv"]:
-                    msg = '%s not format %s ["xls", "xlsx", "ods", "sxc", "pdf", "html", "csv", "tsv"]' % (format, servicename)
-                    raise Exception(msg)
-            elif servicename in "ZohoShow":
-                if not format in ["ppt", "pps", "odp", "pdf"]:
-                    msg = '%s not format %s ["ppt", "pps", "odp", "pdf"]' % (format, servicename)
-                    raise Exception(msg)
+            if not format in self.formats[servicename]:
+                msg = '%s is not format %s %s' % (format, servicename, str(self.formats[servicename]))
+                raise Exception(msg)
         else:
-            if not format in ["xml", "json"]:
-                msg = '%s not format ["xml", "json"]' % format
+            if not format in self.formats["get"]:
+                msg = '%s is not GET format %s' % (format, str(self.formats["get"]))
                 raise Exception(msg)
 
     def __check_access(self, access):
-        if not access in ["private", "public"]:
-            msg = '%s is not access ["private", "public"]' % access
+        if not access in self.formats["access"]:
+            msg = '%s is not access %s' % (access, str(self.formats["access"]))
             raise Exception(msg)
 
     def get_ticket (self, servicename):
