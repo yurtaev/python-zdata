@@ -25,6 +25,23 @@ class zdata():
             "get": ["xml", "json"],
             "access": ["private", "public"]
         }
+        self.urls = {
+            "ZohoWriter": {
+                "list": "https://export.writer.zoho.com/api/private/%s/documents?apikey=%s&ticket=%s",
+                "content": "https://export.writer.zoho.com/api/%s/%s/content/%s?apikey=%s&ticket=%s",
+                "download": "https://export.writer.zoho.com/api/%s/%s/download/%s?apikey=%s&ticket=%s"
+            },
+            "ZohoSheet": {
+                "list": "https://sheet.zoho.com/api/private/%s/books?apikey=%s&ticket=%s",
+                "content": "https://sheet.zoho.com/api/%s/%s/content/%s?apikey=%s&ticket=%s",
+                "download": "https://sheet.zoho.com/api/%s/%s/download/%s?apikey=%s&ticket=%s"
+            },
+            "ZohoShow": {
+                "list": "http://show.zoho.com/api/private/%s/presentations?apikey=%s&ticket=%s",
+                "content": "https://show.zoho.com/api/%s/%s/content/%s?apikey=%s&ticket=%s",
+                "download": "https://show.zoho.com/api/%s/%s/download/%s?apikey=%s&ticket=%s"
+            }
+        }
         self.URL_TICKET = "https://accounts.zoho.com/login?servicename=%s&FROM_AGENT=true&LOGIN_ID=%s&PASSWORD=%s"
 
     def __check_servicename(self, servicename):
@@ -72,14 +89,8 @@ class zdata():
         self.__check_format(format)
 
         args = (format, self.api_key, self.get_ticket(servicename))
-        url = None
 
-        if servicename in "ZohoWriter":
-            url = "https://export.writer.zoho.com/api/private/%s/documents?apikey=%s&ticket=%s" % args
-        elif servicename in "ZohoSheet":
-            url = "https://sheet.zoho.com/api/private/%s/books?apikey=%s&ticket=%s" % args
-        elif servicename in "ZohoShow":
-            url = "http://show.zoho.com/api/private/%s/presentations?apikey=%s&ticket=%s" % args
+        url = self.urls[servicename]["list"] % args
 
         data = urllib.urlopen(url)
         data = data.read()
@@ -98,14 +109,8 @@ class zdata():
         self.__check_access(access)
 
         args = (access, format, id, self.api_key, self.get_ticket(servicename))
-        url = None
 
-        if servicename in "ZohoWriter":
-            url = "https://export.writer.zoho.com/api/%s/%s/content/%s?apikey=%s&ticket=%s" % args
-        elif servicename in "ZohoSheet":
-            url = "https://sheet.zoho.com/api/%s/%s/content/%s?apikey=%s&ticket=%s" % args
-        elif servicename in "ZohoShow":
-            url = "https://show.zoho.com/api/%s/%s/content/%s?apikey=%s&ticket=%s" % args
+        url = self.urls[servicename]["content"] % args
 
         data = urllib.urlopen(url)
         data = data.read()
@@ -124,13 +129,7 @@ class zdata():
         self.__check_format(format, servicename=servicename)
 
         args = (access, format, id, self.api_key, self.get_ticket(servicename))
-        url = None
 
-        if servicename in "ZohoWriter":
-            url = "https://export.writer.zoho.com/api/%s/%s/download/%s?apikey=%s&ticket=%s" % args
-        elif servicename in "ZohoSheet":
-            url = "https://sheet.zoho.com/api/%s/%s/download/%s?apikey=%s&ticket=%s" % args
-        elif servicename in "ZohoShow":
-            url = "https://show.zoho.com/api/%s/%s/download/%s?apikey=%s&ticket=%s" % args
+        url = self.urls[servicename]["download"] % args
 
         return url
