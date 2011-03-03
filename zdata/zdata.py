@@ -42,11 +42,12 @@ class zdata():
                 "download": "https://show.zoho.com/api/%s/%s/download/%s?apikey=%s&ticket=%s"
             }
         }
+        self.services = ["ZohoWriter", "ZohoSheet", "ZohoShow"]
         self.URL_TICKET = "https://accounts.zoho.com/login?servicename=%s&FROM_AGENT=true&LOGIN_ID=%s&PASSWORD=%s"
 
     def __check_servicename(self, servicename):
-        if not servicename in ["ZohoWriter", "ZohoSheet", "ZohoShow"]:
-            msg = '%s is not servicename ["ZohoWriter", "ZohoSheet",     "ZohoShow"]' % servicename
+        if not servicename in self.services:
+            msg = '%s is not servicename %s' % (servicename, str(self.services))
             raise Exception(msg)
 
     def __check_format(self, format, servicename=None):
