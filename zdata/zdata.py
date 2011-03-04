@@ -142,10 +142,30 @@ class CRM:
         self.ticket = self.zdata.get_ticket("ZohoCRM")
         self.api_key = api_key
         self.urls = {
-            "getMyRecords": "http://crm.zoho.com/crm/private/%s/Leads/getMyRecords?newFormat=%s&apikey=%s&ticket=%s"
+            "getMyRecords": "http://crm.zoho.com/crm/private/%s/Leads/getMyRecords?newFormat=%s&apikey=%s&ticket=%s",
+            "getRecords": "http://crm.zoho.com/crm/private/%s/Leads/getRecords?newFormat=%s&apikey=%s&ticket=%s"
         }
 
     def getMyRecords(self, format="json", newFormat="1", dict=False):
+        self.zdata._check_format(format)
+
+        args = (format, newFormat, self.api_key, self.ticket)
+        url = self.urls["getMyRecords"] % args
+
+        data = urllib.urlopen(url)
+        data = data.read()
+
+        if format in "json":
+            if dict:
+                return json.loads(data)
+            else:
+                return data
+        elif format in "xml":
+            return data
+
+    def getRecords(self, format="json", newFormat="1", dict=False):
+        self.zdata._check_format(format)
+
         self.zdata._check_format(format)
 
         args = (format, newFormat, self.api_key, self.ticket)
