@@ -8,7 +8,7 @@ try:
 except ImportError:
     import json
 
-class zdata():
+class zdata:
     def __init__(self, username, password, api_key):
         self.username = username
         self.password = password
@@ -16,7 +16,8 @@ class zdata():
         self.ticket = {
             "ZohoWriter": None,
             "ZohoSheet": None,
-            "ZohoShow": None
+            "ZohoShow": None,
+            "ZohoCRM": None
         }
         self.formats = {
             "ZohoWriter": ["doc", "docx", "pdf", "html", "sxw", "odt", "rtf"],
@@ -42,7 +43,7 @@ class zdata():
                 "download": "https://show.zoho.com/api/%s/%s/download/%s?apikey=%s&ticket=%s"
             }
         }
-        self.services = ["ZohoWriter", "ZohoSheet", "ZohoShow"]
+        self.services = ["ZohoWriter", "ZohoSheet", "ZohoShow", "ZohoCRM"]
         self.URL_TICKET = "https://accounts.zoho.com/login?servicename=%s&FROM_AGENT=true&LOGIN_ID=%s&PASSWORD=%s"
 
     def __check_servicename(self, servicename):
@@ -50,7 +51,7 @@ class zdata():
             msg = '%s is not servicename %s' % (servicename, str(self.services))
             raise Exception(msg)
 
-    def __check_format(self, format, servicename=None):
+    def _check_format(self, format, servicename=None):
         if servicename:
             if not format in self.formats[servicename]:
                 msg = '%s is not format %s %s' % (format, servicename, str(self.formats[servicename]))
@@ -87,7 +88,7 @@ class zdata():
 
     def get_list(self, servicename, format="json", dict=False):
         self.__check_servicename(servicename)
-        self.__check_format(format)
+        self._check_format(format)
 
         args = (format, self.api_key, self.get_ticket(servicename))
 
@@ -106,7 +107,7 @@ class zdata():
 
     def get_content(self, access, servicename, id, format="json", dict=False):
         self.__check_servicename(servicename)
-        self.__check_format(format)
+        self._check_format(format)
         self.__check_access(access)
 
         args = (access, format, id, self.api_key, self.get_ticket(servicename))
@@ -127,10 +128,36 @@ class zdata():
     def get_url_download(self, access, servicename, format, id):
         self.__check_access(access)
         self.__check_servicename(servicename)
-        self.__check_format(format, servicename=servicename)
+        self._check_format(format, servicename=servicename)
 
         args = (access, format, id, self.api_key, self.get_ticket(servicename))
 
         url = self.urls[servicename]["download"] % args
 
         return url
+
+class CRM:
+    def __init__(self, username, password, api_key):
+        self.zdata = zdata(username, password, api_key)
+        self.ticket = self.zdata.get_ticket("ZohoCRM")
+        self.api_key = api_key
+        self.urls = {
+            "getMyRecords": "http://crm.zoho.com/crm/private/%s/Leads/getMyRecords?newFormat=%s&apikey=%s&ticket=%s"
+        }
+
+    def getMyRecords(self, format="json", newFormat="1", dict=False):
+        self.zdata._check_format(format)
+
+        args = (format, newFormat, self.api_key, self.ticket)
+        url = self.urls["getMyRecords"] % args
+
+        data = urllib.urlopen(url)
+        data = data.read()
+
+        if format in "json":
+            if dict:
+                return json.loads(data)
+            else:
+                return data
+        elif format in "xml":
+            return data
