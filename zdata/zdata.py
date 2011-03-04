@@ -166,10 +166,8 @@ class CRM:
     def getRecords(self, format="json", newFormat="1", dict=False):
         self.zdata._check_format(format)
 
-        self.zdata._check_format(format)
-
         args = (format, newFormat, self.api_key, self.ticket)
-        url = self.urls["getMyRecords"] % args
+        url = self.urls["getRecords"] % args
 
         data = urllib.urlopen(url)
         data = data.read()
