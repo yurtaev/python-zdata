@@ -17,7 +17,8 @@ class zdata:
             "ZohoWriter": None,
             "ZohoSheet": None,
             "ZohoShow": None,
-            "ZohoCRM": None
+            "ZohoCRM": None,
+            "ZohoProjects": None
         }
         self.formats = {
             "ZohoWriter": ["doc", "docx", "pdf", "html", "sxw", "odt", "rtf"],
@@ -43,7 +44,7 @@ class zdata:
                 "download": "https://show.zoho.com/api/%s/%s/download/%s?apikey=%s&ticket=%s"
             }
         }
-        self.services = ["ZohoWriter", "ZohoSheet", "ZohoShow", "ZohoCRM"]
+        self.services = ["ZohoWriter", "ZohoSheet", "ZohoShow", "ZohoCRM", "ZohoProjects"]
         self.URL_TICKET = "https://accounts.zoho.com/login?servicename=%s&FROM_AGENT=true&LOGIN_ID=%s&PASSWORD=%s"
 
     def _check_servicename(self, servicename):
@@ -157,6 +158,62 @@ class CRM:
         if not "ticket" in kwargs:
             kwargs["ticket"] = self.ticket
         kwargs["newFormat"] = newFormat
+        args = urllib.urlencode(kwargs)
+        data = urllib.urlopen(url, args)
+        data = data.read()
+
+        if format in "json":
+            if dict:
+                return json.loads(data)
+            else:
+                return data
+        elif format in "xml":
+            return data
+
+class Projects:
+    def __init__(self, username, password, api_key):
+        self.zdata = zdata(username, password, api_key)
+        self.ticket = self.zdata.get_ticket("ZohoProjects")
+        self.api_key = api_key
+        self.methods = ["getportals", "getlogin", "getphotourl", "content", "add", "delete", "update", ""]
+
+    def _check_method(self, method):
+        if not method in self.methods:
+            msg = '%s is not method %s' % (method, str(self.methods))
+            raise Exception(msg)
+
+    def my_info(self, method, format="json", dict=False, **kwargs):
+        self._check_method(method)
+        if "getphotourl" in method:
+            url = "http://projects.zoho.com/api/private/%s/user/%s" % (format, method)
+        else:
+            url = "http://projects.zoho.com/api/private/%s/dashbs/%s" % (format, method)
+        if not "apikey" in kwargs:
+            kwargs["apikey"] = self.api_key
+        if not "ticket" in kwargs:
+            kwargs["ticket"] = self.ticket
+        args = urllib.urlencode(kwargs)
+        data = urllib.urlopen(url, args)
+        data = data.read()
+
+        if format in "json":
+            if dict:
+                return json.loads(data)
+            else:
+                return data
+        elif format in "xml":
+            return data
+
+    def request(self, method, portal_name, format="json", dict=False, **kwargs):
+        self._check_method(method)
+        if method == "":
+            url = "http://projects.zoho.com/portal/%s/api/private/%s/project" % (portal_name, format)
+        else:
+            url = "http://projects.zoho.com/portal/%s/api/private/%s/project/%s" % (portal_name, format, method)
+        if not "apikey" in kwargs:
+            kwargs["apikey"] = self.api_key
+        if not "ticket" in kwargs:
+            kwargs["ticket"] = self.ticket
         args = urllib.urlencode(kwargs)
         data = urllib.urlopen(url, args)
         data = data.read()
