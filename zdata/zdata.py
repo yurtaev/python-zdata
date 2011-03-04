@@ -146,6 +146,7 @@ class CRM:
             "getRecords": "http://crm.zoho.com/crm/private/%s/Leads/getRecords?newFormat=%s&apikey=%s&ticket=%s",
             "getRecordById": "http://crm.zoho.com/crm/private/%s/Leads/getRecordById?newFormat=%s&apikey=%s&ticket=%s&id=%s"
         }
+        self.methods = ["getMyRecords", "getRecords", "getRecordById", "getCVRecords", "getSearchRecords", "getSearchRecordsByPDC", "insertRecords", "updateRecords", "deleteRecords", "convertLead"]
 
     def getMyRecords(self, format="json", newFormat="1", dict=False):
         self.zdata._check_format(format)
@@ -188,6 +189,31 @@ class CRM:
         url = self.urls["getRecordById"] % args
 
         data = urllib.urlopen(url)
+        data = data.read()
+
+        if format in "json":
+            if dict:
+                return json.loads(data)
+            else:
+                return data
+        elif format in "xml":
+            return data
+
+    def _check_method(self, method):
+        if not method in self.methods:
+            msg = '%s is not method %s' % (method, str(self.methods))
+            raise Exception(msg)
+
+    def request(self, method, format="json", newFormat="1", dict=False, **kwargs):
+        self._check_method(method)
+        url = "http://crm.zoho.com/crm/private/%s/Leads/%s" % (format, method)
+        if not "apikey" in kwargs:
+            kwargs["apikey"] = self.api_key
+        if not "ticket" in kwargs:
+            kwargs["ticket"] = self.ticket
+        kwargs["newFormat"] = newFormat
+        args = urllib.urlencode(kwargs)
+        data = urllib.urlopen(url, args)
         data = data.read()
 
         if format in "json":
