@@ -46,7 +46,7 @@ class zdata:
         self.services = ["ZohoWriter", "ZohoSheet", "ZohoShow", "ZohoCRM"]
         self.URL_TICKET = "https://accounts.zoho.com/login?servicename=%s&FROM_AGENT=true&LOGIN_ID=%s&PASSWORD=%s"
 
-    def __check_servicename(self, servicename):
+    def _check_servicename(self, servicename):
         if not servicename in self.services:
             msg = '%s is not servicename %s' % (servicename, str(self.services))
             raise Exception(msg)
@@ -61,13 +61,13 @@ class zdata:
                 msg = '%s is not GET format %s' % (format, str(self.formats["get"]))
                 raise Exception(msg)
 
-    def __check_access(self, access):
+    def _check_access(self, access):
         if not access in self.formats["access"]:
             msg = '%s is not access %s' % (access, str(self.formats["access"]))
             raise Exception(msg)
 
     def get_ticket (self, servicename):
-        self.__check_servicename(servicename)
+        self._check_servicename(servicename)
 
         if self.ticket[servicename]:
             return self.ticket[servicename]
@@ -87,7 +87,7 @@ class zdata:
         return self.ticket[servicename]
 
     def get_list(self, servicename, format="json", dict=False):
-        self.__check_servicename(servicename)
+        self._check_servicename(servicename)
         self._check_format(format)
 
         args = (format, self.api_key, self.get_ticket(servicename))
@@ -106,9 +106,9 @@ class zdata:
             return data
 
     def get_content(self, access, servicename, id, format="json", dict=False):
-        self.__check_servicename(servicename)
+        self._check_servicename(servicename)
         self._check_format(format)
-        self.__check_access(access)
+        self._check_access(access)
 
         args = (access, format, id, self.api_key, self.get_ticket(servicename))
 
@@ -126,8 +126,8 @@ class zdata:
             return data
 
     def get_url_download(self, access, servicename, format, id):
-        self.__check_access(access)
-        self.__check_servicename(servicename)
+        self._check_access(access)
+        self._check_servicename(servicename)
         self._check_format(format, servicename=servicename)
 
         args = (access, format, id, self.api_key, self.get_ticket(servicename))
