@@ -226,16 +226,14 @@ class Projects:
         elif format in "xml":
             return data
 
-    def users(self, portal_name, projid, format="json", dict=False):
-        url = "http://projects.zoho.com/portal/%s/api/private/%s/users" % (portal_name, format)
-        args = urllib.urlencode({"projid": projid,
-                                 "ticket": self.ticket,
-                                 "apikey": self.api_key})
-        data = urllib.urlopen(url, args)
+    def users(self, portal_name, projid, format="json", dic=False):
+        url = "http://projects.zoho.com/portal/%s/api/private/%s/users?apikey=%s&ticket=%s" % (portal_name, format, self.api_key, self.ticket)
+        args = dict(projId=projid)
+        data = urllib.urlopen(url, urllib.urlencode(args))
         data = data.read()
 
         if format in "json":
-            if dict:
+            if dic:
                 return json.loads(data)
             else:
                 return data
