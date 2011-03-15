@@ -241,3 +241,21 @@ class Projects:
                 return data
         elif format in "xml":
             return data
+
+    def tasks(self, portal_name, projid, format="json", dict=False, **kwargs):
+        url = "http://projects.zoho.com/portal/%s/api/private/%s/tasks?apikey=%s&ticket=%s" % (portal_name, format, self.api_key, self.ticket)
+        kwargs["projid"] = projid
+        args = urllib.urlencode(kwargs)
+        print kwargs
+        print args
+        print url+"?"+args
+        data = urllib.urlopen(url, args)
+        data = data.read()
+
+        if format in "json":
+            if dict:
+                return json.loads(data)
+            else:
+                return data
+        elif format in "xml":
+            return data
