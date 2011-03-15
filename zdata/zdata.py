@@ -225,3 +225,19 @@ class Projects:
                 return data
         elif format in "xml":
             return data
+
+    def users(self, portal_name, projid, format="json", dict=False):
+        url = "http://projects.zoho.com/portal/%s/api/private/%s/users" % (portal_name, format)
+        args = urllib.urlencode({"projid": projid,
+                                 "ticket": self.ticket,
+                                 "apikey": self.api_key})
+        data = urllib.urlopen(url, args)
+        data = data.read()
+
+        if format in "json":
+            if dict:
+                return json.loads(data)
+            else:
+                return data
+        elif format in "xml":
+            return data
