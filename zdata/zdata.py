@@ -207,7 +207,7 @@ class Projects:
     def request(self, method, portal_name, format="json", dict=False, **kwargs):
         self._check_method(method)
         if method == "":
-            url = "http://projects.zoho.com/portal/%s/api/private/%s/project" % (portal_name, format)
+            url = "http://projects.zoho.com/portal/%s/api/private/%s/projects" % (portal_name, format)
         else:
             url = "http://projects.zoho.com/portal/%s/api/private/%s/project/%s" % (portal_name, format, method)
         if not "apikey" in kwargs:
