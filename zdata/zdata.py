@@ -258,3 +258,22 @@ class Projects:
                 return data
         elif format in "xml":
             return data
+
+    def milestones(self, portal_name, projid, format="json", dic=False):
+        url = "http://projects.zoho.com/portal/%s/api/private/%s/mss?apikey=%s&ticket=%s"
+        url = url % (portal_name, format, self.api_key, self.ticket)
+        args = dict(projId=projid,
+                    flag="allflag",
+                    status="notcompleted",
+                    matchcrit="upcoming")
+        print url
+        data = urllib.urlopen(url, urllib.urlencode(args))
+        data = data.read()
+
+        if format in "json":
+            if dic:
+                return json.loads(data)
+            else:
+                return data
+        elif format is "xml":
+            return data
