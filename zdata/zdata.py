@@ -87,7 +87,7 @@ class zdata:
 
         return self.ticket[servicename]
 
-    def get_list(self, servicename, format="json", dict=False):
+    def get_list(self, servicename, format="json", dic=False):
         self._check_servicename(servicename)
         self._check_format(format)
 
@@ -99,14 +99,14 @@ class zdata:
         data = data.read()
 
         if format in "json":
-            if dict:
+            if dic:
                 return json.loads(data)
             else:
                 return data
         elif format in "xml":
             return data
 
-    def get_content(self, access, servicename, id, format="json", dict=False):
+    def get_content(self, access, servicename, id, format="json", dic=False):
         self._check_servicename(servicename)
         self._check_format(format)
         self._check_access(access)
@@ -119,7 +119,7 @@ class zdata:
         data = data.read()
 
         if format in "json":
-            if dict:
+            if dic:
                 return json.loads(data)
             else:
                 return data
@@ -150,7 +150,7 @@ class CRM:
             msg = '%s is not method %s' % (method, str(self.methods))
             raise Exception(msg)
 
-    def request(self, method, format="json", newFormat="1", dict=False, **kwargs):
+    def request(self, method, format="json", newFormat="1", dic=False, **kwargs):
         self._check_method(method)
         url = "http://crm.zoho.com/crm/private/%s/Leads/%s" % (format, method)
         if not "apikey" in kwargs:
@@ -163,7 +163,7 @@ class CRM:
         data = data.read()
 
         if format in "json":
-            if dict:
+            if dic:
                 return json.loads(data)
             else:
                 return data
@@ -182,7 +182,7 @@ class Projects:
             msg = '%s is not method %s' % (method, str(self.methods))
             raise Exception(msg)
 
-    def my_info(self, method, format="json", dict=False, **kwargs):
+    def my_info(self, method, format="json", dic=False, **kwargs):
         self._check_method(method)
         if "getphotourl" in method:
             url = "http://projects.zoho.com/api/private/%s/user/%s" % (format, method)
@@ -197,14 +197,14 @@ class Projects:
         data = data.read()
 
         if format in "json":
-            if dict:
+            if dic:
                 return json.loads(data)
             else:
                 return data
         elif format in "xml":
             return data
 
-    def request(self, method, portal_name, format="json", dict=False, **kwargs):
+    def request(self, method, portal_name, format="json", dic=False, **kwargs):
         self._check_method(method)
         if method == "":
             url = "http://projects.zoho.com/portal/%s/api/private/%s/projects" % (portal_name, format)
@@ -219,7 +219,7 @@ class Projects:
         data = data.read()
 
         if format in "json":
-            if dict:
+            if dic:
                 return json.loads(data)
             else:
                 return data
