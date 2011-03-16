@@ -267,7 +267,6 @@ class Projects:
                     flag="allflag",
                     status="notcompleted",
                     matchcrit="upcoming")
-        print url
         data = urllib.urlopen(url, urllib.urlencode(args))
         data = data.read()
 
@@ -277,4 +276,19 @@ class Projects:
             else:
                 return data
         elif format is "xml":
+            return data
+
+    def meetings(self, portal_name, projid, format="json", dic=False):
+        url = "http://projects.zoho.com/portal/%s/api/private/%s/meetings?apikey=%s&ticket=%s"
+        url = url % (portal_name, format, self.api_key, self.ticket)
+        args = dict(projId=projid,
+                    state="open")
+        data = urllib.urlopen(url, urllib.urlencode(args)).read()
+
+        if format in "json":
+            if dic:
+                return json.loads(data)
+            else:
+                return data
+        elif format in "xml":
             return data
