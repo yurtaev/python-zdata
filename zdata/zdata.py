@@ -227,7 +227,8 @@ class Projects:
             return data
 
     def users(self, portal_name, projid, format="json", dic=False):
-        url = "http://projects.zoho.com/portal/%s/api/private/%s/users?apikey=%s&ticket=%s" % (portal_name, format, self.api_key, self.ticket)
+        url = "http://projects.zoho.com/portal/%s/api/private/%s/users?apikey=%s&ticket=%s"
+        url = url % (portal_name, format, self.api_key, self.ticket)
         args = dict(projId=projid)
         data = urllib.urlopen(url, urllib.urlencode(args))
         data = data.read()
@@ -243,7 +244,7 @@ class Projects:
     def tasks(self, portal_name, projid, format="json", dic=False):
         url = "http://projects.zoho.com/portal/%s/api/private/%s/tasks?apikey=%s&ticket=%s"
         url = url % (portal_name, format, self.api_key, self.ticket)
-        args =dict(projId=projid,
+        args = dict(projId=projid,
                     flag="allflag",
                     uname="all",
                     mstatus="notcompleted",
