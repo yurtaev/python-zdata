@@ -292,3 +292,17 @@ class Projects:
                 return data
         elif format in "xml":
             return data
+
+    def documents(self, portal_name, projid, format="json", dic=False):
+        url = "http://projects.zoho.com/portal/%s/api/private/%s/docs?apikey=%s&ticket=%s"
+        url = url % (portal_name, format, self.api_key, self.ticket)
+        args = dict(projId=projid)
+        data = urllib.urlopen(url, urllib.urlencode(args)).read()
+
+        if format in "json":
+            if dic:
+                return json.loads(data)
+            else:
+                return data
+        elif format in "xml":
+            return data
